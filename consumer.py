@@ -31,6 +31,7 @@ class Consumer(Thread):
                            ".doc", ".docx", ".json"]
         self.chunk_size = 1024
         self.RECONNECTING_BUFFER = 10
+        self.DEFAULT_PROCESSING_TIME = 1
         self.hash = hashlib.md5()
         self.connect()
         self.class_logger = Logger('Consumer')
@@ -97,11 +98,11 @@ class Consumer(Thread):
 
         # Main method logic
         if file_type:
-            # Getting file size to calculate consumer processing time
-            size = self.get_file_size_in_bytes(file_name)
-            processing_time = self.get_file_process_time(size)
             # For create event
             if EventTypes.CREATED in decoded_msg:
+                # Getting file size to calculate consumer processing time
+                size = self.get_file_size_in_bytes(file_name)
+                processing_time = self.get_file_process_time(size)
                 print(f"[+] Received created event, processing time will be {processing_time} seconds.")
                 # Insert hash value only if it does not exist in db
                 if self.db.insert_if_not_exists('Files', 'File_Hash', file_hash):
@@ -117,6 +118,9 @@ class Consumer(Thread):
                 time.sleep(processing_time)
             # For delete event
             elif EventTypes.DELETED in decoded_msg:
+                # Getting file size to calculate consumer processing time
+                size = self.get_file_size_in_bytes(file_name)
+                processing_time = self.get_file_process_time(size)
                 print(f"[+] Received deleted event, processing time will be {processing_time} seconds.")
                 try:
                     # file_hash = self.db.select_value('Files', 'File_Hash')
@@ -127,7 +131,7 @@ class Consumer(Thread):
                     self.class_logger.logger.error(f"Unable to delete '{file_hash}' from db, Error: {err}.")
             # For moved or modified event
             elif EventTypes.MOVED in decoded_msg or EventTypes.MODIFIED in decoded_msg:
-                print(f"[+] Received modified or moved event, processing time will be {processing_time} seconds.")
+                print(f"[+] Received modified or moved event, processing time will be {self.DEFAULT_PROCESSING_TIME} seconds.")
                 self.class_logger.logger.info(f"Received '{decoded_msg}'.")
 
     def run(self):
