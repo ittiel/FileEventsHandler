@@ -21,6 +21,6 @@ based on md5 file hash code, implementing the following logic:
 4. RabbitMQ will continue to process event from queue.
 
 
-### Project architecture
+## Project architecture
 ![architecture](https://user-images.githubusercontent.com/119053363/211627802-8d44370e-778c-4e04-b8bf-313f4af5b96e.png)
 
