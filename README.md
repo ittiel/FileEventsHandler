@@ -22,4 +22,5 @@ based on md5 file hash code, implementing the following logic:
 
 
 ### Project architecture
+![architecture](https://user-images.githubusercontent.com/119053363/211627802-8d44370e-778c-4e04-b8bf-313f4af5b96e.png)
 
